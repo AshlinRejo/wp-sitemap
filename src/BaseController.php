@@ -71,7 +71,7 @@ abstract class BaseController {
 	/**
 	 * Display date and time format
 	 *
-	 * @param $time integer|string
+	 * @param $time integer
 	 * @return string
 	 * */
 	protected function dateFormat($time){
@@ -86,7 +86,7 @@ abstract class BaseController {
 			// Return default time format if the option is empty.
 			$time_format = 'g:i a';
 		}
-		return sprintf( __( '%1$s at %2$s', 'wp-sitemap-ashlin' ), date_i18n( $date_format, strtotime( $time )), date_i18n( $time_format, strtotime( $time )));
+		return sprintf( __( '%1$s at %2$s', 'wp-sitemap-ashlin' ), date_i18n( $date_format, $time), date_i18n( $time_format, $time));
 	}
 
 	/**

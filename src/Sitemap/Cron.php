@@ -56,7 +56,7 @@ class Cron extends BaseController{
 	 * */
 	public function registerCron(){
 		if (!wp_next_scheduled('wp_sitemap_ashlin_refresh_sitemap')) {
-			return wp_schedule_event( time(), 	'hourly', 'wp_sitemap_ashlin_refresh_sitemap' );
+			return wp_schedule_event(time(),'hourly','wp_sitemap_ashlin_refresh_sitemap');
 		}
 		return true;
 	}
