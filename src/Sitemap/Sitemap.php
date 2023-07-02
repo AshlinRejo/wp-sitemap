@@ -97,6 +97,15 @@ class Sitemap {
 	}
 
 	/**
+	 * Get sitemap from option table
+	 *
+	 * @return array
+	 * */
+	public function getSitemap(){
+		return get_option("wp_sitemap_ashlin");
+	}
+
+	/**
 	 * Group the URLs
 	 *
 	 * @param $URLs array

@@ -40,9 +40,15 @@ class Page extends BaseController{
 	public function adminMenuContent(){
 		if (!current_user_can('manage_options')) return;
 		$message = $this->validateAndInitiateSitemapProcess();
-		$nextCronAt = Cron::instance()->getNextScheduled();
+		$Cron = Cron::instance();
+		$nextCronAt = $Cron->getNextScheduled();
+		$sitemap = Sitemap::instance()->getSitemap();
+		$updated_at = '';
+		if(isset($sitemap['updated_at'])){
+			$updated_at = $Cron->dateFormat($sitemap['updated_at']);
+		}
 		$filepath = WPS_ASHLIN_PATH . 'src/Admin/templates/dashboard.php';
-		$data = array('message' => $message, 'next_cron_at' => $nextCronAt);
+		$data = array('message' => $message, 'next_cron_at' => $nextCronAt, 'sitemap' => $sitemap, 'last_updated_at' => $updated_at);
 		$this->render($filepath, $data);
 	}
 
