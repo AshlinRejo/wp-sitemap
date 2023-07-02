@@ -26,6 +26,9 @@ if((new WPSitemapAshlinRequirementChecks())->check()){
 		require WPS_ASHLIN_PATH . 'vendor/autoload.php';
 	}
 
-	add_action( 'plugins_loaded', [ new WPSitemapAshlin\Plugin(), 'load' ] );
+	// Clear scheduler while deactivate plugin
+	register_deactivation_hook(__FILE__, [ WPSitemapAshlin\Plugin::instance(), 'pluginDeactivated' ]);
+
+	add_action( 'plugins_loaded', [ WPSitemapAshlin\Plugin::instance(), 'load' ] );
 }
 

@@ -9,10 +9,62 @@ if (!defined('ABSPATH')) exit;
 class Sitemap {
 
 	/**
+	 * Class instance.
+	 * @var Sitemap $instance
+	 * */
+	protected static $instance = null;
+
+	/**
+	 * Get class instance.
+	 *
+	 * @return Sitemap
+	 */
+	public static function instance() {
+		if ( ! static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
+
+	/**
 	 * Initiate sitemap generation process
+	 *
+	 * @return array
 	 * */
 	public function initiateSitemapGenerationProcess(){
-		if (!current_user_can('manage_options')) return;
+		if (!current_user_can('manage_options')) return $this->response(false, esc_html__('Invalid access.', 'wp-sitemap-ashlin'));
+		$result = $this->createSitemap();
+
+		if($result === true){
+			$status = Cron::instance()->registerCron();
+			if($status){
+				return $this->response(true, esc_html__('Sitemap generated successfully and scheduled to auto generate on every one hour.', 'wp-sitemap-ashlin'));
+			} else {
+				return $this->response(true, esc_html__('Sitemap generated successfully and failed to scheduled cron.', 'wp-sitemap-ashlin'));
+			}
+		} else {
+			return $this->response(false, esc_html__('Failed to generate sitemap.', 'wp-sitemap-ashlin'));
+		}
+	}
+
+	/**
+	 * Format response
+	 *
+	 * @param $status boolean
+	 * @param $message string
+	 * @return array
+	 * */
+	private function response($status, $message){
+		return array(
+			'status' => $status,
+			'message' => $message
+		);
+	}
+
+	/**
+	 * Refresh sitemap
+	 * */
+	public function refreshSitemap(){
 		return $this->createSitemap();
 	}
 

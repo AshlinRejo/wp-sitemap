@@ -1,6 +1,8 @@
 <?php
 namespace WPSitemapAshlin;
 
+use WPSitemapAshlin\Sitemap\Cron;
+
 if (!defined('ABSPATH')) exit;
 
 /**
@@ -9,9 +11,26 @@ if (!defined('ABSPATH')) exit;
 class Plugin {
 
 	/**
+	 * Class instance.
+	 * @var Plugin $instance
+	 * */
+	protected static $instance = null;
+
+	/**
 	 * Plugin loaded state
 	 * */
 	private $loaded = false;
+
+	/**
+	 * Get class instance.
+	 * @return Plugin
+	 */
+	public static function instance() {
+		if ( ! static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
 
 	/**
 	 * Initialise the plugin
@@ -26,9 +45,17 @@ class Plugin {
 	 * Register events
 	 * */
 	private function registerEvents(){
-		$eventClasses = ['\WPSitemapAshlin\Admin\Page'];
+		$eventClasses = ['\WPSitemapAshlin\Admin\Page',
+			'\WPSitemapAshlin\Sitemap\Cron'];
 		foreach ($eventClasses as $eventClass){
 			(new $eventClass())->init();
 		}
+	}
+
+	/**
+	 * While deactivate plugin
+	 * */
+	public function pluginDeactivated(){
+		Cron::instance()->removeScheduledEvents();
 	}
 }

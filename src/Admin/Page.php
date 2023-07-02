@@ -2,6 +2,7 @@
 namespace WPSitemapAshlin\Admin;
 
 use WPSitemapAshlin\BaseController;
+use WPSitemapAshlin\Sitemap\Cron;
 use WPSitemapAshlin\Sitemap\Sitemap;
 
 if (!defined('ABSPATH')) exit;
@@ -39,8 +40,9 @@ class Page extends BaseController{
 	public function adminMenuContent(){
 		if (!current_user_can('manage_options')) return;
 		$message = $this->validateAndInitiateSitemapProcess();
+		$nextCronAt = Cron::instance()->getNextScheduled();
 		$filepath = WPS_ASHLIN_PATH . 'src/Admin/templates/dashboard.php';
-		$data = array('message' => $message);
+		$data = array('message' => $message, 'next_cron_at' => $nextCronAt);
 		$this->render($filepath, $data);
 	}
 
@@ -52,20 +54,15 @@ class Page extends BaseController{
 		$nonce = sanitize_text_field(wp_unslash($_POST['_nonce']?? ''));
 		// Verify nonce
 		if(!empty($nonce) && wp_verify_nonce($nonce,'wp_sitemap_crawl')){
-			$result = (new Sitemap())->initiateSitemapGenerationProcess();
-			if($result === true){
-				$message = esc_html__('Sitemap created successfully and scheduled to auto generate on every one hour', 'wp-sitemap-ashlin');
-				return '<div class="notice notice-success"><p>'.$message.'</p></div>';
+			$result = Sitemap::instance()->initiateSitemapGenerationProcess();
+			if($result['status'] === true){
+				return '<div class="notice notice-success"><p>'.$result['message'].'</p></div>';
 			} else {
-				$message = esc_html__('Failed to create sitemap', 'wp-sitemap-ashlin');
+				return '<div class="notice notice-warning"><p>'.$result['message'].'</p></div>';
 			}
 		} else {
-			$message = esc_html__('Invalid request', 'wp-sitemap-ashlin');
+			$message = esc_html__('Invalid request.', 'wp-sitemap-ashlin');
+			return '<div class="notice notice-warning"><p>'.$message.'</p></div>';
 		}
-		return '<div class="notice notice-warning"><p>'.$message.'</p></div>';
-	}
-
-	public function displayNotice(){
-		echo '<div class="notice notice-warning"><p>'.esc_html__('WP Sitemap Ashlin plugin needs to meet the following requirement to functional', 'wp-sitemap-ashlin').'</p><div>';
 	}
 }

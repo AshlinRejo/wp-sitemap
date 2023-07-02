@@ -14,5 +14,10 @@ if (!defined('ABSPATH')) exit;
 			<input type="hidden" name="_nonce" value="<?php echo esc_attr(wp_create_nonce('wp_sitemap_crawl'));?>">
 			<input type="hidden" name="action" value="wp_sitemap_crawl">
 		</p>
+		<?php if(!empty($next_cron_at)){ ?>
+		<p>
+			<?php echo sprintf(esc_attr__('Sitemap will refresh on every 1 hour. Next cron is scheduled on %s', 'wp-sitemap-ashlin'), $next_cron_at); ?>
+		</p>
+		<?php } ?>
 	</form>
 </div>

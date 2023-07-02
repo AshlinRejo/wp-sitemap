@@ -69,6 +69,27 @@ abstract class BaseController {
 	}
 
 	/**
+	 * Display date and time format
+	 *
+	 * @param $time integer|string
+	 * @return string
+	 * */
+	protected function dateFormat($time){
+		if(empty($time)) return '';
+		$date_format = get_option( 'date_format' );
+		if ( empty( $date_format ) ) {
+			// Return default date format if the option is empty.
+			$date_format = 'F j, Y';
+		}
+		$time_format = get_option( 'time_format' );
+		if ( empty( $time_format ) ) {
+			// Return default time format if the option is empty.
+			$time_format = 'g:i a';
+		}
+		return sprintf( __( '%1$s at %2$s', 'wp-sitemap-ashlin' ), date_i18n( $date_format, strtotime( $time )), date_i18n( $time_format, strtotime( $time )));
+	}
+
+	/**
 	 * Method to register hooks/events
 	 * */
 	abstract function hooks();
