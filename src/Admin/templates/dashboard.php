@@ -5,7 +5,14 @@ if (!defined('ABSPATH')) exit;
 	<h1 class="wp-heading-inline">
 		<?php esc_html_e("WP Sitemap", 'wp-sitemap-ashlin'); ?>
 	</h1>
-	<p>
-		<input type="button" name="start_crawl" id="wp-sitemap-crawl-button" class="button" value="<?php esc_attr_e("Create sitemap", 'wp-sitemap-ashlin'); ?>">
-	</p>
+	<?php if(!empty($message)){
+		echo $message;
+	} ?>
+	<form action="<?php echo esc_url( admin_url( 'admin.php?page=wp-sitemap-ashlin' ) ); ?>" method="post">
+		<p>
+			<input type="submit" id="wp-sitemap-crawl-submit" class="button" value="<?php esc_attr_e("Create sitemap", 'wp-sitemap-ashlin'); ?>">
+			<input type="hidden" name="_nonce" value="<?php echo esc_attr(wp_create_nonce('wp_sitemap_crawl'));?>">
+			<input type="hidden" name="action" value="wp_sitemap_crawl">
+		</p>
+	</form>
 </div>
