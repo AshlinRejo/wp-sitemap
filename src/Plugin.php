@@ -2,6 +2,7 @@
 namespace WPSitemapAshlin;
 
 use WPSitemapAshlin\Sitemap\Cron;
+use WPSitemapAshlin\Sitemap\Sitemap;
 
 if (!defined('ABSPATH')) exit;
 
@@ -57,5 +58,6 @@ class Plugin {
 	 * */
 	public function pluginDeactivated(){
 		Cron::instance()->removeScheduledEvents();
+		Sitemap::instance()->deleteSitemapFromOptions();
 	}
 }

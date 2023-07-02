@@ -106,6 +106,13 @@ class Sitemap {
 	}
 
 	/**
+	 * Remove sitemap information from DB on uninstall
+	 * */
+	public function deleteSitemapFromOptions(){
+		return delete_option("wp_sitemap_ashlin");
+	}
+
+	/**
 	 * Group the URLs
 	 *
 	 * @param $URLs array
