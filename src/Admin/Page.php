@@ -36,6 +36,8 @@ class Page extends BaseController{
 	 * Admin menu content
 	 * */
 	public function adminMenuContent(){
-		echo 'Hello Ashlin!!!';
+		$filepath = WPS_ASHLIN_PATH . 'src/Admin/templates/dashboard.php';
+		$data = array();
+		$this->render($filepath, $data);
 	}
 }
