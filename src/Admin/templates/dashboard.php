@@ -1,13 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
 ?>
-<style>
-	.wp_sitemap_block {
-		width: 23%;
-		min-width: 250px;
-		display: inline-table;
-	}
-</style>
 <div class="wrap">
 	<h1 class="wp-heading-inline">
 		<?php esc_html_e("WP Sitemap", 'wp-sitemap-ashlin'); ?>
@@ -29,28 +22,6 @@ if (!defined('ABSPATH')) exit;
 	</form>
 	<?php if(!empty($sitemap)){ ?>
 		<br>
-		<h3><?php esc_html_e('Sitemap', 'wp-sitemap-ashlin'); ?></h3>
-		<?php if(isset($last_updated_at)){ ?>
-			<p><?php echo sprintf(esc_html__('Last updated on %s', 'wp-sitemap-ashlin'), $last_updated_at); ?></p>
-		<?php } ?>
-			<br>
-		<?php if(isset($sitemap['sitemap'])){ ?>
-			<?php foreach ($sitemap['sitemap'] as $key => $items){ ?>
-				<div class="wp_sitemap_block">
-					<p>
-						<b><?php echo esc_html(strtoupper(str_replace('-', ' ', $key))); ?></b>
-					</p>
-					<p>
-					<ul>
-						<?php foreach ($items as $item){ ?>
-							<li>
-								<a href="<?php echo esc_attr($item['href']); ?>"><?php echo esc_html($item['anchorText']);?></a>
-							</li>
-						<?php } ?>
-					</ul>
-					</p>
-				</div>
-			<?php } ?>
-		<?php } ?>
+		<?php include 'sitemap.php'; ?>
 	<?php } ?>
 </div>

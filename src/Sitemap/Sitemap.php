@@ -1,18 +1,30 @@
 <?php
 namespace WPSitemapAshlin\Sitemap;
 
+use WPSitemapAshlin\BaseController;
+
 if (!defined('ABSPATH')) exit;
 
 /**
  * Sitemap class
  */
-class Sitemap {
+class Sitemap extends BaseController {
 
 	/**
 	 * Class instance.
 	 * @var Sitemap $instance
 	 * */
 	protected static $instance = null;
+
+	/**
+	 * @var string
+	 * */
+	protected $home_page_content = '';
+
+	/**
+	 * @var array
+	 * */
+	protected $sitemap_data = array();
 
 	/**
 	 * Get class instance.
@@ -25,6 +37,11 @@ class Sitemap {
 		}
 		return static::$instance;
 	}
+
+	/**
+	 * Register the event. This should be implemented as it is an abstract method
+	 * */
+	public function hooks(){}
 
 	/**
 	 * Initiate sitemap generation process
@@ -44,6 +61,53 @@ class Sitemap {
 			}
 		} else {
 			return $this->response(false, esc_html__('Failed to generate sitemap.', 'wp-sitemap-ashlin'));
+		}
+	}
+
+	/**
+	 * Get Sitemap HTML content
+	 *
+	 * @return string
+	 * */
+	private function getSitemapHTMLContent(){
+		$updated_at = '';
+		if(isset($this->sitemap_data['updated_at'])){
+			$updated_at = $this->dateFormat($this->sitemap_data['updated_at']);
+		}
+		$filepath = WPS_ASHLIN_PATH . 'src/Admin/templates/sitemap-html.php';
+		$data = array('sitemap' => $this->sitemap_data, 'last_updated_at' => $updated_at);
+		return $this->getHTML($filepath, $data);
+	}
+
+	/**
+	 * Create files and folders
+	 * */
+	private function createFiles(){
+		$upload_dir      = wp_get_upload_dir();
+		$files = array(
+			array(
+				'base'    => $upload_dir['basedir'] . '/wp_sitemap',
+				'file'    => 'home-page.html',
+				'content' => $this->home_page_content,
+			),
+			array(
+				'base'    => $upload_dir['basedir'] . '/wp_sitemap',
+				'file'    => 'sitemap.html',
+				'content' => $this->getSitemapHTMLContent(),
+			)
+		);
+
+		foreach ( $files as $file ) {
+			if(file_exists( trailingslashit( $file['base'] ) . $file['file'] )){
+				wp_delete_file(trailingslashit( $file['base'] ) . $file['file']);
+			}
+			if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
+				$file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w+' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_read_fopen
+				if ( $file_handle ) {
+					fwrite( $file_handle, $file['content'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fwrite
+					fclose( $file_handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
+				}
+			}
 		}
 	}
 
@@ -78,7 +142,10 @@ class Sitemap {
 		// Possible to through an exception
 		if($URLs === false) return false;
 		$groupedURLs = $this->groupURLForSitemap($URLs);
-		return $this->storeSitemap($groupedURLs);
+		$result = $this->storeSitemap($groupedURLs);
+		if($result) $this->createFiles();
+		return $result;
+
 	}
 
 	/**
@@ -88,12 +155,11 @@ class Sitemap {
 	 * @return boolean
 	 * */
 	private function storeSitemap($groupedURLs){
-		$data = [
+		$this->sitemap_data = [
 			'sitemap' => $groupedURLs,
 			'updated_at' => current_time('timestamp')
 		];
-		current_time('timestamp');
-		return update_option("wp_sitemap_ashlin", $data);
+		return update_option("wp_sitemap_ashlin", $this->sitemap_data);
 	}
 
 	/**
@@ -159,7 +225,7 @@ class Sitemap {
 	 * */
 	private function getHomePageURLs(){
 		try {
-			$content = file_get_contents(home_url());
+			$content = $this->home_page_content = file_get_contents(home_url());
 			$content = strip_tags($content,"<a>");
 			$content = preg_replace('/&(?!amp)/', '&amp;', $content);
 			$dom = new \DomDocument();

@@ -37,6 +37,16 @@ abstract class BaseController {
 	}
 
 	/**
+	 * Get HTML
+	 * @param $path string
+	 * @param $data array
+	 * @return string
+	 * */
+	public function getHTML($path, $data = []) {
+		return $this->setPath($path)->setData($data)->returnHTML();
+	}
+
+	/**
 	 * Set the file path
 	 * @param $path string
 	 * @return $this object
@@ -66,6 +76,18 @@ abstract class BaseController {
 			include $this->path;
 		}
 		echo ob_get_clean();
+	}
+
+	/**
+	 * Return template contents
+	 */
+	protected function returnHTML() {
+		ob_start();
+		if (file_exists($this->path)) {
+			extract($this->data);
+			include $this->path;
+		}
+		return ob_get_clean();
 	}
 
 	/**
