@@ -47,7 +47,8 @@ class Plugin {
 	 * */
 	private function registerEvents(){
 		$eventClasses = ['\WPSitemapAshlin\Admin\Page',
-			'\WPSitemapAshlin\Sitemap\Cron'];
+			'\WPSitemapAshlin\Sitemap\Cron',
+			'WPSitemapAshlin\Sitemap\Sitemap'];
 		foreach ($eventClasses as $eventClass){
 			(new $eventClass())->init();
 		}

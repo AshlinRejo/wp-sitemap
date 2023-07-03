@@ -1,6 +1,13 @@
 <?php
 if (!defined('ABSPATH')) exit;
 ?>
+<style>
+	.wp_sitemap_block {
+		width: 23%;
+		min-width: 250px;
+		display: inline-table;
+	}
+</style>
 <div class="wrap">
 	<h1 class="wp-heading-inline">
 		<?php esc_html_e("WP Sitemap", 'wp-sitemap-ashlin'); ?>

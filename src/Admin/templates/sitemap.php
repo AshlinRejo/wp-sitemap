@@ -1,13 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
 ?>
-<style>
-	.wp_sitemap_block {
-		width: 23%;
-		min-width: 250px;
-		display: inline-table;
-	}
-</style>
 <h3><?php esc_html_e('Sitemap', 'wp-sitemap-ashlin'); ?></h3>
 <?php if(isset($last_updated_at)){ ?>
 	<p><?php echo sprintf(esc_html__('Last updated on %s', 'wp-sitemap-ashlin'), $last_updated_at); ?></p>

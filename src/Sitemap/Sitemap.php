@@ -39,9 +39,23 @@ class Sitemap extends BaseController {
 	}
 
 	/**
-	 * Register the event. This should be implemented as it is an abstract method
+	 * Register the event.
 	 * */
-	public function hooks(){}
+	public function hooks(){
+		add_action('wp_footer', [$this, 'displaySitemapLinkInFooter']);
+	}
+
+	/**
+	 * Display link to sitemap in footer
+	 * */
+	public function displaySitemapLinkInFooter(){
+		$upload_dir = wp_get_upload_dir();
+		if(file_exists($upload_dir['basedir'] . '/wp-sitemap/sitemap.html')){
+			$filepath = WPS_ASHLIN_PATH . 'src/templates/footer.php';
+			$data = array('sitemap_url' => $upload_dir['baseurl'] . '/wp-sitemap/sitemap.html');
+			$this->render($filepath, $data);
+		}
+	}
 
 	/**
 	 * Initiate sitemap generation process
@@ -86,12 +100,12 @@ class Sitemap extends BaseController {
 		$upload_dir      = wp_get_upload_dir();
 		$files = array(
 			array(
-				'base'    => $upload_dir['basedir'] . '/wp_sitemap',
+				'base'    => $upload_dir['basedir'] . '/wp-sitemap',
 				'file'    => 'home-page.html',
 				'content' => $this->home_page_content,
 			),
 			array(
-				'base'    => $upload_dir['basedir'] . '/wp_sitemap',
+				'base'    => $upload_dir['basedir'] . '/wp-sitemap',
 				'file'    => 'sitemap.html',
 				'content' => $this->getSitemapHTMLContent(),
 			)
