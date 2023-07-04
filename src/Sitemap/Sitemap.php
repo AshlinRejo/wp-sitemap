@@ -211,10 +211,11 @@ class Sitemap extends BaseController {
 	}
 
 	/**
-	 * Remove sitemap information from DB on uninstall
+	 * Remove sitemap information from DB and also the files and folders created by our plugin on deactivate
 	 * */
-	public function deleteSitemapFromOptions(){
-		return delete_option("wp_sitemap_ashlin");
+	public function deleteSitemapDataAndFiles(){
+		delete_option("wp_sitemap_ashlin");
+		$this->removeFolder();
 	}
 
 	/**

@@ -59,6 +59,6 @@ class Plugin {
 	 * */
 	public function pluginDeactivated(){
 		Cron::instance()->removeScheduledEvents();
-		Sitemap::instance()->deleteSitemapFromOptions();
+		Sitemap::instance()->deleteSitemapDataAndFiles();
 	}
 }
