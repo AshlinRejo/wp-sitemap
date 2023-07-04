@@ -58,6 +58,7 @@ class Plugin {
 	 * While deactivate plugin
 	 * */
 	public function pluginDeactivated(){
+		if (!current_user_can('manage_options')) return;
 		Cron::instance()->removeScheduledEvents();
 		Sitemap::instance()->deleteSitemapDataAndFiles();
 	}
