@@ -94,31 +94,55 @@ class Sitemap extends BaseController {
 	}
 
 	/**
-	 * Create files and folders
+	 * Get file information
+	 *
+	 * @return array
 	 * */
-	private function createFiles(){
+	private function getFileInformation(){
 		$upload_dir      = wp_get_upload_dir();
-		$files = array(
+		return array(
 			array(
 				'base'    => $upload_dir['basedir'] . '/wp-sitemap',
 				'file'    => 'home-page.html',
-				'content' => $this->home_page_content,
 			),
 			array(
 				'base'    => $upload_dir['basedir'] . '/wp-sitemap',
 				'file'    => 'sitemap.html',
-				'content' => $this->getSitemapHTMLContent(),
 			)
 		);
+	}
 
+	/**
+	 * Remove folder
+	 * */
+	private function removeFolder(){
+		$upload_dir = wp_get_upload_dir();
+		$files = $this->getFileInformation();
 		foreach ( $files as $file ) {
-			if(file_exists( trailingslashit( $file['base'] ) . $file['file'] )){
-				wp_delete_file(trailingslashit( $file['base'] ) . $file['file']);
+			if (file_exists(trailingslashit($file['base']) . $file['file'])) {
+				wp_delete_file(trailingslashit($file['base']) . $file['file']);
 			}
+		}
+		if (is_dir($upload_dir['basedir'] . '/wp-sitemap')) {
+			@rmdir($upload_dir['basedir'] . '/wp-sitemap');
+		}
+	}
+
+	/**
+	 * Create files and folders
+	 * */
+	private function createFiles(){
+		$files = $this->getFileInformation();
+		foreach ( $files as $file ) {
 			if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
-				$file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w+' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_read_fopen
+				$file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_read_fopen
 				if ( $file_handle ) {
-					fwrite( $file_handle, $file['content'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fwrite
+					if($file['file'] === 'home-page.html'){
+						$content = $this->home_page_content;
+					} else {
+						$content = $this->getSitemapHTMLContent();
+					}
+					fwrite( $file_handle, $content ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fwrite
 					fclose( $file_handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
 				}
 			}
@@ -152,6 +176,7 @@ class Sitemap extends BaseController {
 	 * @return boolean
 	 * */
 	private function createSitemap(){
+		$this->removeFolder();
 		$URLs = $this->getHomePageURLs();
 		// Possible to through an exception
 		if($URLs === false) return false;
