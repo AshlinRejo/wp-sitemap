@@ -1,10 +1,14 @@
 # Package Template
+
 Repository template for our packages
 
 # Usage
-When creating a new repository for a package or a plugin, select this repository as the template. It will initialize the new repository with all the structure & files contained in the template.
+
+When creating a new repository for a package or a plugin, select this repository as the template. It will initialize the
+new repository with all the structure & files contained in the template.
 
 # Content
+
 * `bin/install-wp-tests.sh`: installer for WordPress tests suite
 * `.editorconfig`: config file for your IDE to follow our coding standards
 * `.gitattributes`: list of directories & files excluded from export

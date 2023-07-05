@@ -1,4 +1,5 @@
 <?php
+
 namespace WPSitemapAshlin;
 
 if (!defined('ABSPATH')) exit;
@@ -6,7 +7,8 @@ if (!defined('ABSPATH')) exit;
 /**
  * Base controller for register and initialise the event
  */
-abstract class BaseController {
+abstract class BaseController
+{
 
 	/**
 	 * Protected variable
@@ -23,7 +25,8 @@ abstract class BaseController {
 	/**
 	 * Initialise the event
 	 * */
-	public function init(){
+	public function init()
+	{
 		$this->hooks();
 	}
 
@@ -32,7 +35,8 @@ abstract class BaseController {
 	 * @param $path string
 	 * @param $data array
 	 * */
-	public function render($path, $data = []) {
+	public function render($path, $data = [])
+	{
 		$this->setPath($path)->setData($data)->display();
 	}
 
@@ -42,7 +46,8 @@ abstract class BaseController {
 	 * @param $data array
 	 * @return string
 	 * */
-	public function getHTML($path, $data = []) {
+	public function getHTML($path, $data = [])
+	{
 		return $this->setPath($path)->setData($data)->returnHTML();
 	}
 
@@ -51,7 +56,8 @@ abstract class BaseController {
 	 * @param $path string
 	 * @return $this object
 	 */
-	protected function setPath($path) {
+	protected function setPath($path)
+	{
 		$this->path = $path;
 		return $this;
 	}
@@ -61,7 +67,8 @@ abstract class BaseController {
 	 * @param $data array
 	 * @return $this object
 	 */
-	protected function setData($data){
+	protected function setData($data)
+	{
 		$this->data = $data;
 		return $this;
 	}
@@ -69,7 +76,8 @@ abstract class BaseController {
 	/**
 	 * Load template contents
 	 */
-	protected function display() {
+	protected function display()
+	{
 		ob_start();
 		if (file_exists($this->path)) {
 			extract($this->data);
@@ -81,7 +89,8 @@ abstract class BaseController {
 	/**
 	 * Return template contents
 	 */
-	protected function returnHTML() {
+	protected function returnHTML()
+	{
 		ob_start();
 		if (file_exists($this->path)) {
 			extract($this->data);
@@ -96,19 +105,20 @@ abstract class BaseController {
 	 * @param $time integer
 	 * @return string
 	 * */
-	protected function dateFormat($time){
-		if(empty($time)) return '';
-		$date_format = get_option( 'date_format' );
-		if ( empty( $date_format ) ) {
+	protected function dateFormat($time)
+	{
+		if (empty($time)) return '';
+		$date_format = get_option('date_format');
+		if (empty($date_format)) {
 			// Return default date format if the option is empty.
 			$date_format = 'F j, Y';
 		}
-		$time_format = get_option( 'time_format' );
-		if ( empty( $time_format ) ) {
+		$time_format = get_option('time_format');
+		if (empty($time_format)) {
 			// Return default time format if the option is empty.
 			$time_format = 'g:i a';
 		}
-		return sprintf( __( '%1$s at %2$s', 'wp-sitemap-ashlin' ), date_i18n( $date_format, $time), date_i18n( $time_format, $time));
+		return sprintf(__('%1$s at %2$s', 'wp-sitemap-ashlin'), date_i18n($date_format, $time), date_i18n($time_format, $time));
 	}
 
 	/**

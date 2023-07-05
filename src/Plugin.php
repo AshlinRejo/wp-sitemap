@@ -1,4 +1,5 @@
 <?php
+
 namespace WPSitemapAshlin;
 
 use WPSitemapAshlin\Sitemap\Cron;
@@ -9,7 +10,8 @@ if (!defined('ABSPATH')) exit;
 /**
  * Plugin initialize
  */
-class Plugin {
+class Plugin
+{
 
 	/**
 	 * Class instance.
@@ -26,8 +28,9 @@ class Plugin {
 	 * Get class instance.
 	 * @return Plugin
 	 */
-	public static function instance() {
-		if ( ! static::$instance ) {
+	public static function instance()
+	{
+		if (!static::$instance) {
 			static::$instance = new static();
 		}
 		return static::$instance;
@@ -36,8 +39,9 @@ class Plugin {
 	/**
 	 * Initialise the plugin
 	 * */
-	public function load(){
-		if($this->loaded === true) return;
+	public function load()
+	{
+		if ($this->loaded === true) return;
 		$this->loadTextDomain();
 		$this->registerEvents();
 		$this->loaded = true;
@@ -46,11 +50,12 @@ class Plugin {
 	/**
 	 * Register events
 	 * */
-	private function registerEvents(){
+	private function registerEvents()
+	{
 		$eventClasses = ['\WPSitemapAshlin\Admin\Page',
 			'\WPSitemapAshlin\Sitemap\Cron',
 			'WPSitemapAshlin\Sitemap\Sitemap'];
-		foreach ($eventClasses as $eventClass){
+		foreach ($eventClasses as $eventClass) {
 			(new $eventClass())->init();
 		}
 	}
@@ -58,14 +63,16 @@ class Plugin {
 	/**
 	 * Load plugin text-domain
 	 * */
-	private function loadTextDomain() {
-		load_plugin_textdomain( 'wp-sitemap-ashlin', false, 'wp-sitemap/languages/' );
+	private function loadTextDomain()
+	{
+		load_plugin_textdomain('wp-sitemap-ashlin', false, 'wp-sitemap/languages/');
 	}
 
 	/**
 	 * While deactivate plugin
 	 * */
-	public function pluginDeactivated(){
+	public function pluginDeactivated()
+	{
 		if (!current_user_can('manage_options')) return;
 		Cron::instance()->removeScheduledEvents();
 		Sitemap::instance()->deleteSitemapDataAndFiles();
