@@ -7,7 +7,7 @@
  * Version: 1.0
  * Slug: wp-sitemap-ashlin
  * Text Domain: wp-sitemap-ashlin
- * Domain Path: /i18n/languages/
+ * Domain Path: languages
  * Requires at least: 5.0
  */
 

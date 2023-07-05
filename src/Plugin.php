@@ -38,6 +38,7 @@ class Plugin {
 	 * */
 	public function load(){
 		if($this->loaded === true) return;
+		$this->loadTextDomain();
 		$this->registerEvents();
 		$this->loaded = true;
 	}
@@ -52,6 +53,13 @@ class Plugin {
 		foreach ($eventClasses as $eventClass){
 			(new $eventClass())->init();
 		}
+	}
+
+	/**
+	 * Load plugin text-domain
+	 * */
+	private function loadTextDomain() {
+		load_plugin_textdomain( 'wp-sitemap-ashlin', false, 'wp-sitemap/languages/' );
 	}
 
 	/**
