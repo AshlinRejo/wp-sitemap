@@ -248,6 +248,10 @@ class Sitemap extends BaseController
 		foreach ($URLs as $url) {
 			if ($this->startsWith($url['href'], $homePageURL)) {
 				$relativeURL = substr($url['href'], strlen($homePageURL));
+				// Remove index.php if exists
+				if ($this->startsWith($relativeURL, "/index.php")) {
+					$relativeURL = substr($relativeURL, strlen('"/index.php"'));
+				}
 				$relativeURL = trim($relativeURL, '/');
 				$relativeURLArray = explode('/', $relativeURL);
 				if (count($relativeURLArray) > 1) {
